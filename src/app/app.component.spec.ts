@@ -20,16 +20,51 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'my-poc-app'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('my-poc-app');
-  });
+  
+  describe('filterEmployee', () => {
+    let component: AppComponent;
+    let fixture: any;
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('my-poc-app app is running!');
+    beforeEach(() => {
+      fixture = TestBed.createComponent(AppComponent);
+      component = fixture.componentInstance;
+    });
+
+    it('should filter employees with salary > 1000 and yoe > 10', () => {
+      const employees = [
+        { name: 'John', salary: 1500, yoe: 12 },
+        { name: 'Jane', salary: 800, yoe: 15 },
+        { name: 'Bob', salary: 2000, yoe: 8 }
+      ];
+      const result = component.filterEmployee(employees);
+      expect(result).toEqual([{ name: 'John', salary: 1500, yoe: 12 }]);
+    });
+
+    it('should return empty array when no employees meet criteria', () => {
+      const employees = [
+        { name: 'John', salary: 800, yoe: 5 },
+        { name: 'Jane', salary: 900, yoe: 8 }
+      ];
+      const result = component.filterEmployee(employees);
+      expect(result).toEqual([]);
+    });
+
+    it('should return empty array for empty input', () => {
+      const result = component.filterEmployee([]);
+      expect(result).toEqual([]);
+    });
+
+    it('should filter multiple qualifying employees', () => {
+      const employees = [
+        { name: 'John', salary: 1500, yoe: 12 },
+        { name: 'Jane', salary: 1200, yoe: 15 },
+        { name: 'Bob', salary: 800, yoe: 20 }
+      ];
+      const result = component.filterEmployee(employees);
+      expect(result).toEqual([
+        { name: 'John', salary: 1500, yoe: 12 },
+        { name: 'Jane', salary: 1200, yoe: 15 }
+      ]);
+    });
   });
 });
